@@ -1,5 +1,12 @@
 package core;
 
+import static constants.Parameters.FORMAT;
+import static constants.Parameters.LANGUAGE;
+import static constants.Parameters.OPTIONS;
+import static constants.Parameters.TEXT;
+import static core.YandexSpellerConstants.YANDEX_SPELLER_API_URI;
+import static org.hamcrest.Matchers.lessThan;
+
 import beans.YandexSpellerAnswer;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -15,14 +22,18 @@ import io.restassured.specification.RequestSpecification;
 import io.restassured.specification.ResponseSpecification;
 import org.apache.http.HttpStatus;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
-import static constants.Parameters.*;
-import static core.YandexSpellerConstants.*;
-import static org.hamcrest.Matchers.lessThan;
-
 public class YandexSpellerApi {
+    //todo https://speller.yandex.net/ лучше сделать отдельной переменной
+    //todo разнеси это класс на отдельные
+    // формирование параметров (один метод- один класс)
+    //класс с методами для формирования запроса и вызов метода get
+    //класс с асертами - см. комменты в тестах. там будет понятнее, что я имею ввиду
     public static final String spellerUrl = "https://speller.yandex.net/services/spellservice.json/checkTexts";
     private static long requestNumber = 0L;
 
@@ -140,5 +151,4 @@ public class YandexSpellerApi {
                 .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
                 .build();
     }
-
 }
