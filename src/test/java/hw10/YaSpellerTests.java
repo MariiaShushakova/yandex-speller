@@ -1,23 +1,31 @@
 package hw10;
 
+import static constants.Texts.*;
+import static core.YandexSpellerApi.failResponse;
+import static core.YandexSpellerApi.getAnswers;
+import static core.YandexSpellerApi.getStringResult;
+import static core.YandexSpellerApi.requestBuilder;
+import static core.YandexSpellerApi.successResponse;
+import static enums.Errors.ERROR_UNKNOWN_WORD;
+import static enums.Format.INCORRECT_FORMAT;
+import static enums.Language.EN;
+import static enums.Language.INCORRECT_LANG;
+import static enums.Language.RU;
+import static enums.Language.UK;
+import static enums.Option.IGNORE_DIGITS;
+import static enums.Option.IGNORE_URLS;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+
 import beans.YandexSpellerAnswer;
 import enums.Format;
 import org.junit.Test;
 
 import java.util.List;
 
-import static constants.Texts.*;
-import static core.YandexSpellerApi.*;
-import static enums.Errors.*;
-import static enums.Format.*;
-import static enums.Language.*;
-import static enums.Option.*;
-
-import static org.hamcrest.MatcherAssert.*;
-import static org.hamcrest.Matchers.*;
-
 public class YaSpellerTests {
     @Test
+    //todo см. комменты про if/for ниже
     public void checkErrorsForMisspelling() {
         List<YandexSpellerAnswer> answers = getAnswers(requestBuilder()
                 .language(RU)
@@ -30,7 +38,7 @@ public class YaSpellerTests {
         } else checkIncorrectTexts();
     }
 
-    @Test
+    @Test//+
     public void checkTexts() {
         List<String> result = getStringResult(
                 requestBuilder()
@@ -42,6 +50,8 @@ public class YaSpellerTests {
     }
 
     @Test //BUG
+    //todo см. комменты про if/for ниже
+    //+ этот и два следующих теста очень неплохо группируются в с DataProvider
     public void checkIncorrectTexts() {
         String[] texts = {EN_INCORRECT, RU_INCORRECT, UK_INCORRECT};
         List<String> result = getStringResult(
@@ -58,6 +68,7 @@ public class YaSpellerTests {
     }
 
     @Test //BUG
+    //todo см. комменты про if/for ниже
     public void checkTextsWithDigits() {
         String[] texts = {EN_DIGITS, RU_DIGITS, UK_DIGITS};
         List<String> result = getStringResult(
@@ -74,6 +85,7 @@ public class YaSpellerTests {
     }
 
     @Test //BUG
+    //todo см. комменты про if/for ниже
     public void checkTextsWithLinks() {
         String[] texts = {EN_URL, RU_URL, UK_URL};
         List<String> result = getStringResult(
@@ -90,6 +102,8 @@ public class YaSpellerTests {
     }
 
     @Test //BUG
+    //todo вот всякие там циклы, ифы и лямбды не очень смотрятся в тестах.
+    //лучше вынеси в отдельный класс с асертами (см. комменты в тестах ниже)
     public void checkIncorrectCapitalization() {
         String[] texts = {EN_INCORRECT_CAPS, RU_INCORRECT_CAPS, UK_INCORRECT_CAPS};
         List<String> result = getStringResult(requestBuilder()
@@ -104,7 +118,7 @@ public class YaSpellerTests {
         }
     }
 
-    @Test
+    @Test//+
     public void checkIncorrectLangParameter() {
         requestBuilder()
                 .language(INCORRECT_LANG)
@@ -116,6 +130,7 @@ public class YaSpellerTests {
                 .body(containsString("Invalid parameter 'lang'"));
     }
 
+    //todo checkIgnoreDigitsOption и checkIgnoreUrlOption можно объединить в DataProvider
     @Test
     public void checkIgnoreDigitsOption() {
         List<String> result = getStringResult(
@@ -129,6 +144,9 @@ public class YaSpellerTests {
                 result.isEmpty());
     }
 
+    //todo  assertThat("Errors in text with URL despite 'ignore URLs'option:" + result, result.isEmpty());
+    //вот этот асер дублируется, вместе с сообщением,  - можно создать отдельный класс с асертами, и там обертку c интерфейсом
+    // assertResultIsEmpty(result). Или вынести в переменную сообщение об ошибке
     @Test
     public void checkIgnoreUrlOption() {
         List<String> result = getStringResult(
@@ -141,7 +159,7 @@ public class YaSpellerTests {
         assertThat("Errors in text with URL despite 'ignore URLs'option:" + result, result.isEmpty());
     }
 
-    @Test
+    @Test//+
     public void checkIncorrectFormatOption() {
         requestBuilder()
                 .language(EN)
@@ -155,7 +173,7 @@ public class YaSpellerTests {
                 .body(containsString("Invalid parameter 'format'"));
     }
 
-    @Test
+    @Test//+
     public void checkFormatOption() {
         requestBuilder()
                 .language(EN)
