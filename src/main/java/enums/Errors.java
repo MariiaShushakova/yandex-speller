@@ -6,7 +6,7 @@ public enum Errors {
     ERROR_CAPITALIZATION(3),
     ERROR_TOO_MANY_ERRORS(4);
 
-    public final int value;
+    private final int value;
 
     Errors(int value){
         this.value = value;

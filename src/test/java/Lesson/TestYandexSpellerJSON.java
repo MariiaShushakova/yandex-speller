@@ -8,7 +8,8 @@ import io.restassured.RestAssured;
 import io.restassured.http.ContentType;
 import org.apache.http.HttpStatus;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.testng.annotations.Test;
+
 
 import java.util.Arrays;
 import java.util.List;

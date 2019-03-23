@@ -1,9 +1,9 @@
 package core;
 
-import static constants.Parameters.FORMAT;
-import static constants.Parameters.LANGUAGE;
-import static constants.Parameters.OPTIONS;
-import static constants.Parameters.TEXT;
+import static enums.Parameters.FORMAT;
+import static enums.Parameters.LANGUAGE;
+import static enums.Parameters.OPTIONS;
+import static enums.Parameters.TEXT;
 import static core.YandexSpellerConstants.YANDEX_SPELLER_API_URI;
 import static org.hamcrest.Matchers.lessThan;
 
@@ -52,37 +52,37 @@ public class YandexSpellerApi {
         private Map<String, List<String>> params = new HashMap<>();
 
         public ApiBuilder text(String... text) {
-            params.put(TEXT, Arrays.asList(text));
+            params.put(TEXT.getValue(), Arrays.asList(text));
             return this;
         }
 
         public ApiBuilder options(Option... options) {
             int resultParameter=0;
-            for (Option i :options) {
-                resultParameter += i.value;
+            for (Option i : options) {
+                resultParameter += i.getValue();
             }
-            params.put(OPTIONS,Arrays.asList(String.valueOf(resultParameter)));
+            params.put(OPTIONS.getValue(),Arrays.asList(String.valueOf(resultParameter)));
             return this;
         }
 
         public ApiBuilder language(Language... language) {
-            params.put(LANGUAGE, Arrays.stream(language).map(l->l.value).collect(Collectors.toList()));
+            params.put(LANGUAGE.getValue(), Arrays.stream(language).map(l->l.getValue()).collect(Collectors.toList()));
             return this;
         }
 
         public ApiBuilder format(Format... format){
-            params.put(FORMAT, Arrays.stream(format).map(f->f.getValue()).collect(Collectors.toList()));
+            params.put(FORMAT.getValue(), Arrays.stream(format).map(f->f.getValue()).collect(Collectors.toList()));
             return this;
         }
 
-        public Response callApi() {
-            return RestAssured.with()
-                    .queryParams(params)
-                    .log().all()
-                    .get(YANDEX_SPELLER_API_URI).prettyPeek();
-        }
+//        public Response callApi() {
+//            return RestAssured.with()
+//                    .queryParams(params)
+//                    .log().all()
+//                    .get(YANDEX_SPELLER_API_URI).prettyPeek();
+//        }
 
-        public YandexSpellerApi buildRequest(){
+        public YandexSpellerApi buildRequest() {
             return new YandexSpellerApi(params);
         }
     } //end
@@ -92,6 +92,7 @@ public class YandexSpellerApi {
                 .given(baseRequestConfiguration())
                 .queryParams(params)
                 .get(spellerUrl)
+
                 .prettyPeek();
     }
 
@@ -107,18 +108,13 @@ public class YandexSpellerApi {
     public static List<YandexSpellerAnswer> getAnswers(Response response){
         List<List<YandexSpellerAnswer>> answers = new Gson()
                 .fromJson(response.asString().trim(), new TypeToken<List<List<YandexSpellerAnswer>>>(){
-        }.getType());
+                }.getType());
         return answers.stream().flatMap(List::stream).collect(Collectors.toList());
     }
 
     public static List<String>getStringResult(Response response){
         return getAnswers(response).stream().map(res->res.word).collect(Collectors.toList());
     }
-
-    //public static ApiBuilder with() {
-    //    YandexSpellerApi api = new YandexSpellerApi();
-    //    return new ApiBuilder(api);
-    //}
 
     //get ready Speller answers list form api response
     public static List<YandexSpellerAnswer> getYandexSpellerAnswers(Response response){
@@ -150,5 +146,8 @@ public class YandexSpellerApi {
                 .expectResponseTime(lessThan(20000L))
                 .expectStatusCode(HttpStatus.SC_BAD_REQUEST)
                 .build();
+    }
+    public YandexSpellerApi buildRequest(){
+        return new YandexSpellerApi(params);
     }
 }

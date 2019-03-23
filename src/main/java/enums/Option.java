@@ -7,7 +7,7 @@ public enum Option {
     FIND_REPEAT_WORDS(8),
     IGNORE_CAPITALIZATION(512);
 
-    public final int value;
+    private final int value;
 
     Option(int value){
         this.value = value;

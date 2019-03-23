@@ -6,7 +6,7 @@ public enum Language {
     EN("en"),
     INCORRECT_LANG("tosh");
 
-    public final String value;
+    private final String value;
 
     Language(String value){
         this.value = value;

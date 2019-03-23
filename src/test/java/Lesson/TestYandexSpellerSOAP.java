@@ -3,7 +3,7 @@ package Lesson;
 import core.YandexSpellerSOAP;
 import enums.Language;
 import org.hamcrest.Matchers;
-import org.junit.Test;
+import org.testng.annotations.Test;
 
 import java.util.Arrays;
 
