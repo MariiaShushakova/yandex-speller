@@ -27,6 +27,10 @@ import java.util.List;
 public class YaSpellerTests {
     @Test
     //todo см. комменты про if/for ниже -
+    //todo давай на этом кейсе напишем идеальный тест:
+    //1. убери if
+    //2. вместо проверки кода и сообщения об ошибке прямо в тесте, напиши класс асертов assertCorrectErrorCode(answers, expectedCode);
+    //3. и второй вариант - сравнивай объекты! assertThat(answers, is(expectedAnswers));
     public void checkErrorsForMisspelling() {
         List<YandexSpellerAnswer> answers = getAnswers(requestBuilder()
                 .language(RU)
