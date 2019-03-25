@@ -14,7 +14,7 @@ public enum Texts {
     EN_URL("Hello https://www.ya.ru/"),
     EN_INCORRECT_CAPS("maRia"),
     EN_ANSWER("Hello"),
-    EN_INCORRECT("caw"),
+    EN_INCORRECT("Helllo"),
 
     UK_DIGITS("Укра9на"),
     UK_URL("Украiна https://www.google.ru/"),

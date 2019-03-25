@@ -1,5 +1,7 @@
 package hw10;
 
+import static com.sun.org.apache.xerces.internal.util.PropertyState.is;
+import static enums.Option.DEFAULT;
 import static enums.Texts.*;
 import static core.YandexSpellerApi.failResponse;
 import static core.YandexSpellerApi.getAnswers;
@@ -14,39 +16,43 @@ import static enums.Language.RU;
 import static enums.Option.IGNORE_DIGITS;
 import static enums.Option.IGNORE_URLS;
 import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsString;
+import static utils.YaSpellerUtils.getExpectedAnswersForWrongInput;
+
 
 import beans.YandexSpellerAnswer;
 import core.YandexSpellerDataProvider;
 import enums.Format;
 import enums.Language;
+import org.hamcrest.Matchers;
 import org.testng.annotations.Test;
+import utils.YaSpellerUtils;
 
 import java.util.List;
 
 public class YaSpellerTests {
-    @Test
     //todo см. комменты про if/for ниже -
     //todo давай на этом кейсе напишем идеальный тест:
     //1. убери if
     //2. вместо проверки кода и сообщения об ошибке прямо в тесте, напиши класс асертов assertCorrectErrorCode(answers, expectedCode);
     //3. и второй вариант - сравнивай объекты! assertThat(answers, is(expectedAnswers));
+    @Test
     public void checkErrorsForMisspelling() {
+        String word = RU_INCORRECT.getValue();
         List<YandexSpellerAnswer> answers = getAnswers(requestBuilder()
                 .language(RU)
-                .text(RU_INCORRECT.getValue())
+                .text(word)
                 .buildRequest()
                 .sendGetRequest());
-        if (!answers.isEmpty()) {
-            assertThat("Expected code is wrong:" + answers.get(0).code + "instead of:"
-                    + ERROR_UNKNOWN_WORD.getValue(), answers.get(0).code == ERROR_UNKNOWN_WORD.getValue());
-        } else checkIncorrectTexts(RU, RU_INCORRECT.getValue());
+        List<YandexSpellerAnswer> expectedAnswers = getExpectedAnswersForWrongInput(word);
+        assertThat(answers, Matchers.is(expectedAnswers));
+        checkIncorrectTexts(RU, word);
     }
 
     @Test(dataProvider = "correctTextsProvider", dataProviderClass = YandexSpellerDataProvider.class)
     public void checkTexts(Language lang, String text) {
-        List<String> result = getStringResult(
-                requestBuilder()
+        List<String> result = getStringResult(requestBuilder()
                         .language(lang)
                         .text(text)
                         .buildRequest()

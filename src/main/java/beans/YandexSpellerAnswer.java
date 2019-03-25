@@ -31,7 +31,27 @@ public class YandexSpellerAnswer {
     public String word;
     @SerializedName("s")
     @Expose
-    public List<String> s = new ArrayList<String>();
+    public List<String> s;
+
+    public YandexSpellerAnswer(Integer code, String word, List<String> s) {
+        this.code = code;
+        this.word = word;
+        this.s = s;
+        this.col = 0;
+        this.len = word.length();
+        this.pos = 0;
+        this.row = 0;
+    }
+
+    public YandexSpellerAnswer(Integer code, Integer pos, Integer row, Integer col, Integer len, String word, List<String> s) {
+        this.code = code;
+        this.pos = pos;
+        this.row = row;
+        this.col = col;
+        this.len = len;
+        this.word = word;
+        this.s = s;
+    }
 
     @Override
     public String toString() {
